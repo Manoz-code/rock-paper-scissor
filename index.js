@@ -1,13 +1,31 @@
-console.log("welcome to game");
+
+
+ 
+const selectorContainer = document.querySelector(".selector");
+const displayResult = document.querySelector(".display p");
+const userScoreDisplay = document.querySelector(".user-score span");
+const computerScoreDisplay = document.querySelector(".computer-score span");
 
 // initilize the score
 let userScore = 0;
 let computerScore = 0;
 let gamePlayed = 0;
+let userSelectedChoice = ""
+//User Choice
+const handleUserChoice = (e)=>{
+  
+    const li = e.target.closest("li");
+    if(!li) return;
+    const userChoice = li.textContent;
+    userSelectedChoice = userChoice
+   
+   
+}
+
+
 // Computer Choice
-const computerChoice = ()=>{
+const handleComputerChoice = ()=>{
     const getComputerChoice = Math.floor(Math.random() * 3);
-    console.log(getComputerChoice)
      if(getComputerChoice === 0){
         return "rock";
      }else if(getComputerChoice === 1){
@@ -17,50 +35,51 @@ const computerChoice = ()=>{
      }
 };
 
-// User Choice
-const userChoice = ()=>{
-    const getUserChoice = prompt("Type your choice");
-    return getUserChoice.toLowerCase().trim();
 
-   
-}
 
 // Play Game
 const playGame = ()=>{
-    const userSelectedChoice = userChoice();
-    const computerSelectedChoice = computerChoice();
-   
+    const userChoice = userSelectedChoice.toLocaleLowerCase();
+    const computerChoice = handleComputerChoice();
+ 
 
-    if(userSelectedChoice === computerSelectedChoice) return alert("The game is Draw.")
+    if(userChoice === computerChoice){
+        displayResult.textContent = "The game is Draw.";
+        return displayResult;
+    }
 
-   if(userSelectedChoice === "rock" && computerSelectedChoice === "paper" ||
-    userSelectedChoice === "paper" && computerSelectedChoice === "scissor"||
-     userSelectedChoice === "paper" && computerSelectedChoice === "rock"
+   if(userChoice === "rock" && computerChoice === "paper" ||
+    userChoice === "paper" && computerChoice === "scissor"||
+     userChoice === "paper" && computerChoice === "rock"
    ){
+         displayResult.textContent = `You lose the game ${computerChoice} beats your ${userChoice}`;
          computerScore++;
-        alert( `OOPS, YOU LOSE YOUR ${userSelectedChoice} HAS BEEN BEATEN BY ${computerSelectedChoice}`)
+         computerScoreDisplay.textContent = computerScore;
+     
    }else{
-    userScore++;
-    alert(`CONGRATS...YOU WON YOUR ${userSelectedChoice} BEATS THE ${computerSelectedChoice}`)
+         displayResult.textContent = `You won the game your ${userChoice} beats the ${computerChoice}`;
+         userScore++;
+         userScoreDisplay.textContent = userScore;
    }
+trackGame()
 
 }
 
-// Track Game
-const trackGame = () => {
 
-    if (gamePlayed < 5) {
+// Track Game;
+function trackGame(){
+    
+    if(userScore === 5 && computerScore < 5){
+       alert(`FINAL RESULT : YOU WON THE GAME AGAINST COMPUTER.`);
+       location.reload()
 
-        gamePlayed++;
-        playGame();
-        trackGame();
-
-    } else {
-
-        alert(`Game Over
-User Score: ${userScore}
-Computer Score: ${computerScore}`);
+    }else if(userScore < 5 && computerScore === 5){
+        alert("OPPS! YOU LOSE THE GAME.")
+        location.reload();
     }
-};
+   
+}
 
-trackGame();
+
+selectorContainer.addEventListener("click",handleUserChoice);
+selectorContainer.addEventListener("click",playGame);
